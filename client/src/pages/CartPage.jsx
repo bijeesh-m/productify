@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateQty } from "../features/cart/cartSlice";
+import { removeFromCart, updateQty } from "../features/cart/cartSlice";
 
 const initialCartItems = [
     {
@@ -45,24 +45,36 @@ const initialCartItems = [
     },
 ];
 
-const CartPage = () => {
+const CartPage = ({ }) => {
 
     const cartItems = useSelector((state) => state.cart.items)
 
     const dispatch = useDispatch()
 
     const updateQuantity = (id, change) => {
-
         dispatch(updateQty({ id, change }))
-
     };
+
+    const handleDeleteItem = (id) => {
+        dispatch(removeFromCart(id))
+    }
+
+    const totalPrice = useMemo(() => {
+        return cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0)
+    },[cartItems])
+    
 
     return (
         <div className="min-h-screen bg-gray-100 px-4 py-10">
             <div className="mx-auto max-w-4xl">
-                <h1 className="mb-6 text-3xl font-bold text-gray-800">
-                    My Cart
-                </h1>
+                <div className=" flex justify-between">
+                    <h1 className="mb-6 text-3xl font-bold text-gray-800">
+                        My Cart
+                    </h1>
+                    <h1 className=" font-bold text-2xl">
+                        Total Price :₹ {totalPrice.toLocaleString()}
+                    </h1>
+                </div>
 
                 <div className="space-y-4">
                     {cartItems.map((item) => (
@@ -108,6 +120,9 @@ const CartPage = () => {
                                         +
                                     </button>
                                 </div>
+                            </div>
+                            <div>
+                                <button onClick={() => handleDeleteItem(item.id)} className=" bg-red-600 rounded-xl px-7 py-3 text-white">Delete</button>
                             </div>
                         </div>
                     ))}

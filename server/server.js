@@ -2,12 +2,13 @@ const express = require("express");
 const connectDB = require("./configs/db");
 const dns = require("dns");
 const authRoutes = require("./routes/authRoutes")
-const cors = require("cors")
+const cors = require("cors");
+const Product = require("./models/products");
 
 const app = express();
 require("dotenv").config()
 
-dns.setServers(["8.8.8.8"])
+// dns.setServers(["8.8.8.8"])
 
 app.use(cors({ origin: "http://localhost:5173" }))
 
@@ -15,6 +16,16 @@ connectDB()
 app.use(express.json());
 
 app.use(authRoutes)
+
+
+app.get('/products', async (req, res) => {
+    const { limit, skip } = req.query;
+
+    const products = await Product.find().limit(limit || 10).skip(skip || 0);
+    res.status(200).json({ message: "success", products })
+
+})
+
 
 app.listen(5000, () => {
     console.log("Server is running...");

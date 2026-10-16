@@ -1,11 +1,37 @@
+import { useEffect } from "react";
 import Navbar from "../components/Navbar";
 
 
 const Home = () => {
+
+
+  // useEffect(()=>{
+  //   const fetchData = async()=>{
+  //     const res = await fetch('https://dummyjson.com/products');
+  //     const data = await res.json()
+  //     console.log(data);
+  //   }
+
+  //   fetchData()
+  // },[])
+
+  const parentFun = () => {
+    const parentVar = "This is parent variable";
+    return () => {
+      const childVar = "This is child variable"
+      console.log(childVar, parentVar);
+    }
+  }
+
+
+  const childFun = parentFun()
+  childFun()
+
+
   return (
     <div className="min-h-screen bg-gray-50">
 
-    
+
 
       {/* Hero Section */}
       <section className="bg-blue-600 text-white">
